@@ -173,11 +173,9 @@ static u8 ChooseWildMonLevel(const struct WildPokemon * info)
     return lo + res;
 }
 
-static u16 GetCurrentMapWildMonHeaderId(void)
+static u16 GetCurrentMapWildMonHeaderIdHelper(u16 i)
 {
-    u16 i;
-
-    for (i = 0; ; i++)
+    for (i; ; i++)
     {
         const struct WildPokemonHeader * wildHeader = &gWildMonHeaders[i];
         if (wildHeader->mapGroup == MAP_GROUP(UNDEFINED))
@@ -203,6 +201,23 @@ static u16 GetCurrentMapWildMonHeaderId(void)
     }
 
     return HEADER_NONE;
+}
+
+static u16 GetCurrentMapWildMonHeaderId(void)
+{
+    u16 i = 0;
+    u16 j = 0;
+    u16 version;
+    u16 ids[2];
+
+    for (j; j < 2; j++)
+    {
+        ids[j] = GetCurrentMapWildMonHeaderIdHelper(i);
+        i = ids[j] + 1;
+    }
+
+    version = Random() % 2;
+    return ids[version];
 }
 
 static bool8 UnlockedTanobyOrAreNotInTanoby(void)
