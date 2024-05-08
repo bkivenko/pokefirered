@@ -355,3 +355,11 @@ PalletTown_ProfessorOaksLab_Text_RivalIllCompleteThePokedex::
     .string "ONE ISLAND first…\p"
     .string "Anyways, I'm outta here!$"
 
+PalletTown_ProfessorOaksLab_Text_OakHaveLastStarter::
+    .string "Oh, {PLAYER}, one more thing.\p"
+    .string "You've come so far since I\n"
+    .string "gave you your first POKéMON.\p"
+    .string "I can tell you are worthy.\p"
+    .string "Please, take my last POKéMON\n"
+    .string "and raise it yourself.$"
+

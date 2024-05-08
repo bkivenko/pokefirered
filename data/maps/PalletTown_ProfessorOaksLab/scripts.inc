@@ -115,6 +115,7 @@ PalletTown_ProfessorOaksLab_EventScript_NationalDexScene::
 	special EnableNationalPokedex
 	msgbox PalletTown_ProfessorOaksLab_Text_OakMustReallyWorkToFillPokedex
 	msgbox PalletTown_ProfessorOaksLab_Text_RivalIllCompleteThePokedex
+	msgbox PalletTown_ProfessorOaksLab_Text_OakHaveLastStarter
 	closemessage
 	playbgm MUS_RIVAL_EXIT, 0
 	call_if_eq VAR_FACING, DIR_NORTH, PalletTown_ProfessorOaksLab_EventScript_RivalExitNorth
@@ -1081,6 +1082,7 @@ PalletTown_ProfessorOaksLab_EventScript_BulbasaurBall::
 	setvar PLAYER_STARTER_SPECIES, SPECIES_BULBASAUR
 	setvar RIVAL_STARTER_SPECIES, SPECIES_CHARMANDER
 	setvar RIVAL_STARTER_ID, LOCALID_CHARMANDER_BALL
+	goto_if_ge VAR_MAP_SCENE_PALLET_TOWN_PROFESSOR_OAKS_LAB, 8, PalletTown_ProfessorOaksLab_EventScript_GiveFinalStarter
 	goto_if_ge VAR_MAP_SCENE_PALLET_TOWN_PROFESSOR_OAKS_LAB, 3, PalletTown_ProfessorOaksLab_EventScript_LastPokeBall
 	goto_if_eq VAR_MAP_SCENE_PALLET_TOWN_PROFESSOR_OAKS_LAB, 2, PalletTown_ProfessorOaksLab_EventScript_ConfirmStarterChoice
 	msgbox PalletTown_ProfessorOaksLab_Text_ThoseArePokeBalls
@@ -1224,6 +1226,7 @@ PalletTown_ProfessorOaksLab_EventScript_SquirtleBall::
 	setvar PLAYER_STARTER_SPECIES, SPECIES_SQUIRTLE
 	setvar RIVAL_STARTER_SPECIES, SPECIES_BULBASAUR
 	setvar RIVAL_STARTER_ID, LOCALID_BULBASAUR_BALL
+	goto_if_ge VAR_MAP_SCENE_PALLET_TOWN_PROFESSOR_OAKS_LAB, 8, PalletTown_ProfessorOaksLab_EventScript_GiveFinalStarter
 	goto_if_ge VAR_MAP_SCENE_PALLET_TOWN_PROFESSOR_OAKS_LAB, 3, PalletTown_ProfessorOaksLab_EventScript_LastPokeBall
 	goto_if_eq VAR_MAP_SCENE_PALLET_TOWN_PROFESSOR_OAKS_LAB, 2, PalletTown_ProfessorOaksLab_EventScript_ConfirmStarterChoice
 	msgbox PalletTown_ProfessorOaksLab_Text_ThoseArePokeBalls
@@ -1237,6 +1240,7 @@ PalletTown_ProfessorOaksLab_EventScript_CharmanderBall::
 	setvar PLAYER_STARTER_SPECIES, SPECIES_CHARMANDER
 	setvar RIVAL_STARTER_SPECIES, SPECIES_SQUIRTLE
 	setvar RIVAL_STARTER_ID, LOCALID_SQUIRTLE_BALL
+	goto_if_ge VAR_MAP_SCENE_PALLET_TOWN_PROFESSOR_OAKS_LAB, 8, PalletTown_ProfessorOaksLab_EventScript_GiveFinalStarter
 	goto_if_ge VAR_MAP_SCENE_PALLET_TOWN_PROFESSOR_OAKS_LAB, 3, PalletTown_ProfessorOaksLab_EventScript_LastPokeBall
 	goto_if_eq VAR_MAP_SCENE_PALLET_TOWN_PROFESSOR_OAKS_LAB, 2, PalletTown_ProfessorOaksLab_EventScript_ConfirmStarterChoice
 	msgbox PalletTown_ProfessorOaksLab_Text_ThoseArePokeBalls
@@ -1245,6 +1249,44 @@ PalletTown_ProfessorOaksLab_EventScript_CharmanderBall::
 
 PalletTown_ProfessorOaksLab_EventScript_LastPokeBall::
 	msgbox PalletTown_ProfessorOaksLab_Text_OaksLastMon
+	release
+	end
+
+PalletTown_ProfessorOaksLab_EventScript_GiveFinalStarter::
+	givemon PLAYER_STARTER_SPECIES, 5
+	goto_if_eq VAR_RESULT, 0, PalletTown_ProfessorOaksLab_EventScript_ReceivedFinalStarterParty
+	goto_if_eq VAR_RESULT, 1, PalletTown_ProfessorOaksLab_EventScript_ReceivedFinalStarterPC
+	goto_if_eq VAR_RESULT, 2, EventScript_NoMoreRoomForPokemon
+
+PalletTown_ProfessorOaksLab_EventScript_ReceivedFinalStarterParty::
+	removeobject VAR_LAST_TALKED
+	playfanfare MUS_OBTAIN_KEY_ITEM
+	waitfanfare
+	bufferspeciesname STR_VAR_1, PLAYER_STARTER_SPECIES
+	msgbox Text_GiveNicknameToThisMon, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, PalletTown_ProfessorOaksLab_EventScript_EndGiveMon
+	call EventScript_GetGiftMonPartySlot
+	call EventScript_ChangePokemonNickname
+	goto PalletTown_ProfessorOaksLab_EventScript_EndGiveMon
+	end
+
+PalletTown_ProfessorOaksLab_EventScript_ReceivedFinalStarterPC::
+	removeobject VAR_LAST_TALKED
+	playfanfare MUS_OBTAIN_KEY_ITEM
+	waitfanfare
+	bufferspeciesname STR_VAR_1, VAR_TEMP
+	msgbox Text_GiveNicknameToThisMon, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, PalletTown_ProfessorOaksLab_EventScript_TransferredFinalStarterToPC
+	call EventScript_NameReceivedBoxMon
+	goto PalletTown_ProfessorOaksLab_EventScript_TransferredFinalStarterToPC
+	end
+
+PalletTown_ProfessorOaksLab_EventScript_TransferredFinalStarterToPC::
+	call EventScript_TransferredToPC
+	goto PalletTown_ProfessorOaksLab_EventScript_EndGiveMon
+	end
+
+PalletTown_ProfessorOaksLab_EventScript_EndGiveMon::
 	release
 	end
 
